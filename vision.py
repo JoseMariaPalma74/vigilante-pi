@@ -3,6 +3,12 @@ import sqlite3
 import cv2
 import time
 from datetime import datetime
+# Panel Led
+from luma.led_matrix.device import max7219
+from luma.core.interface.serial import spi, noop
+from luma.core.render import canvas
+from luma.core.legacy import text, show_message
+from luma.core.legacy.font import proportional, LCD_FONT
 
 # --- CONFIGURACIÓN ---
 CARPETA_CAPTURA = "static/capturas"
@@ -45,6 +51,11 @@ if not exito:
 
 print("✅ Cámara lista. Buscando movimiento...")
 
+# Configurar el panel
+serial = spi(port=0, device=0, gpio=noop())
+# Asegúrate de que cascaded=4 y el orientation sean los que te funcionaron en scroll_text.py
+led_device = max7219(serial, cascaded=4, block_orientation=-90, rotate=0)
+
 try:
     while True:
         # 2. Capturar frame actual
@@ -66,7 +77,12 @@ try:
             # Guardamos la imagen real
             cv2.imwrite(ruta_completa, frame_color)
             guardar_en_db(nombre_foto)
-            
+
+            # Mensaje en el panel LED
+            show_message(led_device, "¡ALERTA! MOVIMIENTO DETECTADO", fill="white", font=proportional(LCD_FONT), scroll_delay=0.05)
+    
+            time.sleep(2)
+
             print(f"📸 ¡MOVIMIENTO! Guardada: {nombre_foto}")
             
             # Pausa para no saturar y actualizar referencia
