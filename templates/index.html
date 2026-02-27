@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Vigilante</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a1a; color: #eee; text-align: center; margin: 0; padding: 20px; }
+        h1 { color: #00ff88; text-shadow: 2px 2px #000; }
+        .galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 20px; }
+        .foto-card { background: #2a2a2a; border-radius: 10px; overflow: hidden; border: 1px solid #444; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .foto-card img { width: 100%; height: auto; display: block; }
+        .foto-card p { padding: 10px; margin: 0; font-size: 0.9em; background: #333; }
+        .no-fotos { font-style: italic; color: #888; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <h1>🛰️ Sistema de Vigilancia Pi</h1>
+    <hr style="border: 0; height: 1px; background: #444; width: 80%;">
+    
+    {% if fotos %}
+        <div class="galeria">
+            {% for foto in fotos %}
+                <div class="foto-card">
+                    <img src="{{ url_for('static', filename='capturas/' + foto) }}" alt="Captura">
+                    <p>📅 {{ foto }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-fotos">No hay capturas detectadas todavía...</p>
+    {% endif %}
+</body>
+</html>
